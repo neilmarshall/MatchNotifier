@@ -3,12 +3,10 @@ import logging
 
 import azure.functions as func
 
+from fixture_parser.get_fixtures import get_fixtures
+
 
 def main(mytimer: func.TimerRequest) -> None:
-    utc_timestamp = datetime.datetime.utcnow().replace(
-        tzinfo=datetime.timezone.utc).isoformat()
-
-    if mytimer.past_due:
-        logging.info('The timer is past due!')
-
-    logging.info('Python timer trigger function ran at %s', utc_timestamp)
+    fixture = get_fixtures(r"https://www.bbc.co.uk/sport/football/scores-fixtures/2021-01-28", "Premier League", "Liverpool")
+    if fixture is not None:
+        logging.info(f"Fixture found: {fixture}")
