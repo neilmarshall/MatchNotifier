@@ -1,4 +1,5 @@
 import unittest
+from unittest.mock import patch
 from datetime import datetime
 
 from fixture_parser import filter_fixtures, get_fixtures, parse_fixtures
@@ -11,7 +12,11 @@ class FixtureParserTestCase(unittest.TestCase):
         expected = ('KV Oostende', 'Standard Liege', datetime(2021, 1, 22, 20, 0))
         self.assertEqual(filter_fixtures(fixtures, 'Belgian First Division A', 'Standard Liege'), expected)
 
-    def test_get_fixtures(self):
+    @patch('requests.get')
+    def test_get_fixtures(self, mock_object):
+        with open('./tests/response_data.txt', encoding='utf-8') as f:
+            data = f.read()
+        mock_object.return_value = data
         expected = ('KV Oostende', 'Standard Liege', datetime(2021, 1, 22, 20, 0))
         self.assertEqual(get_fixtures('mock_url', 'Belgian First Division A', 'Standard Liege'), expected)
 

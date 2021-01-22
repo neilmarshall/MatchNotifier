@@ -1,4 +1,4 @@
-def filter_fixtures(fixtures, competition_name, team_name):
+def filter_fixtures(fixtures : dict, competition_name : str, team_name : str) -> tuple:
     """Filter a data structure representing matches for a given competition and team"""
     if competition_name not in fixtures:
         return None

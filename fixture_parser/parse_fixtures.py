@@ -1,7 +1,7 @@
 from datetime import datetime
 from bs4 import BeautifulSoup
 
-def parse_fixtures(data):
+def parse_fixtures(data : str) -> dict:
     """Parse a HTML response object into a data structure representing matches, grouped by competition"""
     soup = BeautifulSoup(data, 'html.parser')
     competitions = soup.find_all(class_="qa-match-block")
