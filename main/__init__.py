@@ -1,5 +1,6 @@
 import datetime
 import logging
+import os
 
 import azure.functions as func
 
@@ -7,6 +8,14 @@ from fixture_parser.get_fixtures import get_fixtures
 
 
 def main(mytimer: func.TimerRequest) -> None:
-    fixture = get_fixtures(r"https://www.bbc.co.uk/sport/football/scores-fixtures/2021-01-28", "Premier League", "Liverpool")
-    if fixture is not None:
-        logging.info(f"Fixture found: {fixture}")
+    fixtures_URL = os.environ.get("FixturesURL")
+    competition_name = os.environ.get("CompetitionName")
+    team_name = os.environ.get("TeamName")
+    fixture = get_fixtures(fixtures_URL, competition_name, team_name)
+    try:
+        if fixture is not None:
+            logging.info(f"Fixture found: {fixture}")
+        else:
+            logging.info(f"No fixtures found today for {team_name} in the {competition_name}")
+    except Exception as ex:
+        logging.error(ex)
