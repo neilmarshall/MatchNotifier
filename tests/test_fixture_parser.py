@@ -5,24 +5,22 @@ from datetime import datetime
 from fixture_parser import filter_fixtures, get_fixtures, parse_fixtures
 
 class FixtureParserTestCase(unittest.TestCase):
-    def test_filter_fixtures(self):
+    def setUp(self):
         with open('./tests/response_data.txt', encoding='utf-8') as f:
-            data = f.read()
-        fixtures = parse_fixtures(data)
+            self.data = f.read()
+
+    def test_filter_fixtures(self):
+        fixtures = parse_fixtures(self.data)
         expected = ('KV Oostende', 'Standard Liege', datetime(2021, 1, 22, 20, 0))
         self.assertEqual(filter_fixtures(fixtures, 'Belgian First Division A', 'Standard Liege'), expected)
 
     @patch('requests.get')
     def test_get_fixtures(self, mock_object):
-        with open('./tests/response_data.txt', encoding='utf-8') as f:
-            data = f.read()
-        mock_object.return_value = data
+        mock_object.return_value.content = self.data
         expected = ('KV Oostende', 'Standard Liege', datetime(2021, 1, 22, 20, 0))
         self.assertEqual(get_fixtures('mock_url', 'Belgian First Division A', 'Standard Liege'), expected)
 
     def test_parse_fixtures(self):
-        with open('./tests/response_data.txt', encoding='utf-8') as f:
-            data = f.read()
         expected = {
             'Premier League': [
                 ('Tottenham Hotspur', 'Liverpool', datetime(2021, 1, 22, 20, 0))
@@ -52,4 +50,4 @@ class FixtureParserTestCase(unittest.TestCase):
                 ('Sion', 'FC Basel', datetime(2021, 1, 22, 19, 30))
             ]
         }
-        self.assertEqual(parse_fixtures(data), expected)
+        self.assertEqual(parse_fixtures(self.data), expected)
