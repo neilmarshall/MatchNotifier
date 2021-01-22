@@ -12,7 +12,8 @@ class FixtureParserTestCase(unittest.TestCase):
         self.assertEqual(filter_fixtures(fixtures, 'Belgian First Division A', 'Standard Liege'), expected)
 
     def test_get_fixtures(self):
-        self.assertEqual(get_fixtures("akjscajsnc"), "abc")
+        expected = ('KV Oostende', 'Standard Liege', datetime(2021, 1, 22, 20, 0))
+        self.assertEqual(get_fixtures('mock_url', 'Belgian First Division A', 'Standard Liege'), expected)
 
     def test_parse_fixtures(self):
         with open('./tests/response_data.txt', encoding='utf-8') as f:
