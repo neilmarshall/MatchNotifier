@@ -13,6 +13,7 @@ from fixture_parser.get_fixtures import get_fixtures
 def main(mytimer: func.TimerRequest) -> None:
     try:
         table_client = TableServiceClient.from_connection_string(conn_str=os.environ["AzureWebJobsStorage"])
+        table = table_client.create_table_if_not_exists(os.environ["TableName"])
         table = table_client.get_table_client(os.environ["TableName"])
 
         fixtures_URL = os.environ.get("FixturesURL")
