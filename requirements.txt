@@ -1,6 +1,8 @@
 astroid==2.4.2
 atomicwrites==1.4.0
 attrs==20.3.0
+azure-core==1.10.0
+azure-data-tables==12.0.0b4
 azure-functions==1.5.0
 beautifulsoup4==4.9.3
 certifi==2020.12.5
@@ -8,9 +10,12 @@ chardet==4.0.0
 colorama==0.4.4
 idna==2.10
 iniconfig==1.1.1
+isodate==0.6.0
 isort==5.7.0
 lazy-object-proxy==1.4.3
 mccabe==0.6.1
+msrest==0.6.19
+oauthlib==3.1.0
 packaging==20.8
 pluggy==0.13.1
 py==1.10.0
@@ -18,6 +23,7 @@ pylint==2.6.0
 pyparsing==2.4.7
 pytest==6.2.1
 requests==2.25.1
+requests-oauthlib==1.3.0
 six==1.15.0
 soupsieve==2.1
 toml==0.10.2

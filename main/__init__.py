@@ -8,8 +8,8 @@ from email_client.email_client import send_email
 from fixture_parser.get_fixtures import get_fixtures
 
 
-# TODO: deal with fixtures that have expired, i.e. full-time scored fixtures
 # TODO: allow multiple competitions / teams in configuration
+# TODO: read configuration from Table Storage
 def main(mytimer: func.TimerRequest) -> None:
     try:
         fixtures_URL = os.environ.get("FixturesURL")
