@@ -15,8 +15,8 @@ class FixtureParserTestCase(unittest.TestCase):
     def test_filter_fixtures(self):
         fixtures = parse_fixtures(self.data)
         expected = [
-            ('KV Oostende', 'Standard Liege', datetime(self.year, self.month, self.day, 20, 0)),
             ('Cercle Bruges', 'Club Bruges', datetime(self.year, self.month, self.day, 17, 45)),
+            ('KV Oostende', 'Standard Liege', datetime(self.year, self.month, self.day, 20, 0)),
             ('Bahia', 'Corinthians', datetime(self.year, self.month, self.day, 22, 0))
         ]
         fixture_filter = {
