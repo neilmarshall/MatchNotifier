@@ -3,6 +3,7 @@ import logging
 import os
 
 import azure.functions as func
+from azure.data.tables import TableServiceClient
 
 from email_client.email_client import send_email
 from fixture_parser.get_fixtures import get_fixtures
@@ -12,6 +13,11 @@ from fixture_parser.get_fixtures import get_fixtures
 # TODO: read configuration from Table Storage
 def main(mytimer: func.TimerRequest) -> None:
     try:
+        table_client = TableServiceClient.from_connection_string(conn_str=os.environ["AzureWebJobsStorage"])
+        table = table_client.create_table_if_not_exists(os.environ["TableName"])
+
+        entities = table.list_entities()
+
         fixtures_URL = os.environ.get("FixturesURL")
         competition_name = os.environ.get("CompetitionName")
         team_name = os.environ.get("TeamName")
