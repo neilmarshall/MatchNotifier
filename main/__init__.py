@@ -23,7 +23,7 @@ def main(mytimer: func.TimerRequest) -> None:
             logging.info(f"Fixture found: {fixture}")
             home_team, away_team, matchdate = fixture
             subject = "Fixture Notification"
-            body = f"{home_team} vs. {away_team}, {matchdate.hour % 12}:{matchdate.minute}{'AM' if matchdate < 12 else 'PM'}"
+            body = f"{home_team} vs. {away_team}, {matchdate.hour % 12}:{matchdate.minute:02}{'AM' if matchdate.hour < 12 else 'PM'}"
             send_email(subject, body, recipient)
         else:
             logging.info(f"No fixtures found today for {team_name} in the {competition_name}")
