@@ -29,9 +29,10 @@ class MainTestCase(unittest.TestCase):
 
     @patch('main.os.environ', mock_environ)
     @patch('main.TableServiceClient', mock_table_service_client)
+    @patch('main.QueueServiceClient')
     @patch('main.get_fixtures', mock_get_fixtures)
     @patch('main.send_email')
-    def test_main(self, mock_send_email):
+    def test_main(self, mock_send_email, mock_queue_service_client):
         main(None)
         call_count = len(set(map(lambda o: o['PartitionKey'], self.mock_entities)))
         self.assertEqual(self.mock_get_fixtures.call_count, call_count)

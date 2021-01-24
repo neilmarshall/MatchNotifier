@@ -1,19 +1,39 @@
-import datetime
+from datetime import datetime, timedelta
+import json
 import logging
 import os
 from itertools import groupby
 
 import azure.functions as func
 from azure.data.tables import TableServiceClient
+from azure.storage.queue import QueueClient, QueueServiceClient
 
 from email_client.email_client import send_email
 from fixture_parser.get_fixtures import get_fixtures
+
+
+def enqueue_notifcation(queue_client, recipient, competition, home_team, away_team, matchdate):
+    try:
+        content = json.dumps({
+            'recipient': recipient,
+            'competition': competition,
+            'homeTeam': home_team,
+            'awawyTeam': away_team,
+            'matchdate': matchdate.isoformat()
+        })
+        visibility_timeout = (matchdate - timedelta(seconds=3600) - datetime.now()).seconds
+        queue_client.send_message(content, visibility_timeout=visibility_timeout)
+    except Exception as ex:
+        logging.error(ex)
 
 
 def main(mytimer: func.TimerRequest) -> None:
     try:
         table_service_client = TableServiceClient.from_connection_string(conn_str=os.environ["AzureWebJobsStorage"])
         table_client = table_service_client.get_table_client(os.environ["TableName"])
+
+        queue_service_client = QueueServiceClient.from_connection_string(os.environ["AzureWebJobsStorage"])
+        queue_client = queue_service_client.get_queue_client(os.environ["QueueName"])
 
         fixtures_URL = os.environ.get("FixturesURL")
 
@@ -34,6 +54,8 @@ def main(mytimer: func.TimerRequest) -> None:
                     competition, home_team, away_team, matchdate = fixture
                     timestamp = f"{matchdate.hour % 12 if matchdate.hour > 12 else matchdate.hour}:{matchdate.minute:02}{'AM' if matchdate.hour < 12 else 'PM'}"
                     body.append(f"{competition} - {home_team} vs. {away_team}, {timestamp}")
+                    logging.info("Enqueueing notification...")
+                    enqueue_notifcation(queue_client, email, competition, home_team, away_team, matchdate)
                 subject = "Fixture Notification"
                 send_email(subject, '\n'.join(body), email)
             else:
