@@ -11,6 +11,7 @@ from fixture_parser.get_fixtures import get_fixtures
 
 parser = argparse.ArgumentParser(description='Command-line client for running match notifications')
 parser.add_argument('-d', '--debug', action='store_true', help='Execute program in debug mode')
+parser.add_argument('-u', '--url', help='URL to read fixtures from')
 
 if __name__ == '__main__':
     args = parser.parse_args()
@@ -22,7 +23,7 @@ if __name__ == '__main__':
         table_service_client = TableServiceClient.from_connection_string(conn_str=config["AzureWebJobsStorage"])
         table_client = table_service_client.get_table_client(config["TableName"])
 
-        fixtures_URL = config['FixturesURL']
+        fixtures_URL = args.url if args.url is not None else config['FixturesURL']
 
         entities = sorted(table_client.list_entities(), key=lambda o: o['PartitionKey'])
         for email, _entities in groupby(entities, key=lambda o: o['PartitionKey']):
