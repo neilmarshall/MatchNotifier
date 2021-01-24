@@ -1,5 +1,5 @@
+import argparse
 import json
-import sys
 from itertools import groupby
 from pprint import pprint
 
@@ -9,9 +9,12 @@ from azure.data.tables import TableServiceClient
 from fixture_parser.get_fixtures import get_fixtures
 
 
+parser = argparse.ArgumentParser(description='Command-line client for running match notifications')
+parser.add_argument('-d', '--debug', action='store_true', help='Execute program in debug mode')
+
 if __name__ == '__main__':
-    debug = len(sys.argv) > 1 and bool(sys.argv[1])
-    if debug:
+    args = parser.parse_args()
+    if args.debug:
         breakpoint()
     try:
         with open('local.settings.json') as f:
