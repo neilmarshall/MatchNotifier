@@ -12,13 +12,12 @@ from fixture_parser.get_fixtures import get_fixtures
 
 def main(mytimer: func.TimerRequest) -> None:
     try:
-        table_client = TableServiceClient.from_connection_string(conn_str=os.environ["AzureWebJobsStorage"])
-        table = table_client.create_table_if_not_exists(os.environ["TableName"])
-        table = table_client.get_table_client(os.environ["TableName"])
+        table_service_client = TableServiceClient.from_connection_string(conn_str=os.environ["AzureWebJobsStorage"])
+        table_client = table_service_client.get_table_client(os.environ["TableName"])
 
         fixtures_URL = os.environ.get("FixturesURL")
 
-        entities = sorted(table.list_entities(), key=lambda o: o['PartitionKey'])
+        entities = sorted(table_client.list_entities(), key=lambda o: o['PartitionKey'])
         for email, _entities in groupby(entities, key=lambda o: o['PartitionKey']):
             fixture_filter = {}
             grouped_entities = sorted(_entities, key=lambda o: o['CompetitionName'])
