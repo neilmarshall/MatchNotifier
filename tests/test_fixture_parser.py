@@ -15,9 +15,9 @@ class FixtureParserTestCase(unittest.TestCase):
     def test_filter_fixtures(self):
         fixtures = parse_fixtures(self.data)
         expected = [
-            ('Cercle Bruges', 'Club Bruges', datetime(self.year, self.month, self.day, 17, 45)),
-            ('KV Oostende', 'Standard Liege', datetime(self.year, self.month, self.day, 20, 0)),
-            ('Bahia', 'Corinthians', datetime(self.year, self.month, self.day, 22, 0))
+            ('Belgian First Division A', 'Cercle Bruges', 'Club Bruges', datetime(self.year, self.month, self.day, 17, 45)),
+            ('Belgian First Division A', 'KV Oostende', 'Standard Liege', datetime(self.year, self.month, self.day, 20, 0)),
+            ('Brazilian Série A', 'Bahia', 'Corinthians', datetime(self.year, self.month, self.day, 22, 0))
         ]
         fixture_filter = {
             'Belgian First Division A': ['Standard Liege', 'Cercle Bruges'],
@@ -28,7 +28,7 @@ class FixtureParserTestCase(unittest.TestCase):
     @patch('requests.get')
     def test_get_fixtures(self, mock_object):
         mock_object.return_value.content = self.data
-        expected = [('KV Oostende', 'Standard Liege', datetime(self.year, self.month, self.day, 20, 0))]
+        expected = [('Belgian First Division A', 'KV Oostende', 'Standard Liege', datetime(self.year, self.month, self.day, 20, 0))]
         self.assertEqual(get_fixtures('mock_url', {'Belgian First Division A': ['Standard Liege']}), expected)
 
     def test_parse_fixtures(self):

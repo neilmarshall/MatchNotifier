@@ -31,9 +31,9 @@ def main(mytimer: func.TimerRequest) -> None:
                 body = []
                 for fixture in fixtures:
                     logging.info(f"Fixture found: {fixture}")
-                    home_team, away_team, matchdate = fixture
+                    competition, home_team, away_team, matchdate = fixture
                     timestamp = f"{matchdate.hour % 12 if matchdate.hour > 12 else matchdate.hour}:{matchdate.minute:02}{'AM' if matchdate.hour < 12 else 'PM'}"
-                    body.append(f"{home_team} vs. {away_team}, {timestamp}")
+                    body.append(f"{competition} - {home_team} vs. {away_team}, {timestamp}")
                 subject = "Fixture Notification"
                 send_email(subject, '\n'.join(body), email)
             else:

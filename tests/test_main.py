@@ -21,8 +21,8 @@ class MainTestCase(unittest.TestCase):
     mock_table_service_client.get_table_client.return_value = mock_table_client
 
     mock_get_fixtures = MagicMock(return_value=[
-        ('Chelsea', 'Arsenal', datetime(2021, 1, 24, 12, 0, 0)),
-        ('Burnley', 'Liverpool', datetime(2021, 1, 24, 16, 30, 0))
+        ('The FA Cup', 'Chelsea', 'Arsenal', datetime(2021, 1, 24, 12, 0, 0)),
+        ('Premier League', 'Burnley', 'Liverpool', datetime(2021, 1, 24, 16, 30, 0))
     ])
 
     @patch('main.os.environ', mock_environ)
@@ -37,6 +37,6 @@ class MainTestCase(unittest.TestCase):
         )
         mock_send_email.assert_called_once_with(
             'Fixture Notification',
-            'Chelsea vs. Arsenal, 12:00PM\nBurnley vs. Liverpool, 4:30PM',
+            'The FA Cup - Chelsea vs. Arsenal, 12:00PM\nPremier League - Burnley vs. Liverpool, 4:30PM',
             'test@test.com'
         )

@@ -7,5 +7,5 @@ def filter_fixtures(fixture_data : dict, fixture_filter : dict):
         team_names = set(fixture_filter[competition_name])
         for (home_team, away_team, matchdate) in fixture_data[competition_name]:
             if home_team in team_names or away_team in team_names:
-                fixtures.append((home_team, away_team, matchdate))
+                fixtures.append((competition_name, home_team, away_team, matchdate))
     return fixtures
