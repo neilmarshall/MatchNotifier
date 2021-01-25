@@ -1,12 +1,12 @@
-from datetime import datetime, timedelta
 import json
 import logging
 import os
+from datetime import datetime, timedelta
 from itertools import groupby
 
 import azure.functions as func
 from azure.data.tables import TableServiceClient
-from azure.storage.queue import QueueClient, QueueServiceClient
+from azure.storage.queue import BinaryBase64EncodePolicy, QueueClient, QueueServiceClient
 
 from email_client.email_client import send_email
 from fixture_parser.get_fixtures import get_fixtures
@@ -18,12 +18,13 @@ def enqueue_notifcation(queue_client, recipient, competition, home_team, away_te
             'recipient': recipient,
             'competition': competition,
             'homeTeam': home_team,
-            'awawyTeam': away_team,
+            'awayTeam': away_team,
             'matchdate': matchdate.isoformat()
         })
         visibility_timeout = (matchdate - timedelta(seconds=3600) - datetime.now()).seconds
         if visibility_timeout > 0:
-            queue_client.send_message(content, visibility_timeout=visibility_timeout)
+            encoded_content = BinaryBase64EncodePolicy().encode(content.encode('utf-8'))
+            queue_client.send_message(encoded_content, visibility_timeout=visibility_timeout)
     except Exception as ex:
         logging.error(ex)
 
