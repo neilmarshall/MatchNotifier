@@ -22,7 +22,8 @@ def enqueue_notifcation(queue_client, recipient, competition, home_team, away_te
             'matchdate': matchdate.isoformat()
         })
         visibility_timeout = (matchdate - timedelta(seconds=3600) - datetime.now()).seconds
-        queue_client.send_message(content, visibility_timeout=visibility_timeout)
+        if visibility_timeout > 0:
+            queue_client.send_message(content, visibility_timeout=visibility_timeout)
     except Exception as ex:
         logging.error(ex)
 
