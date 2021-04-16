@@ -22,6 +22,7 @@ def enqueue_notifcation(queue_client, recipient, competition, home_team, away_te
             'awayTeam': away_team,
             'matchdate': matchdate.isoformat()
         })
+        matchdate = datetime(matchdate.year, matchdate.month, matchdate.day, matchdate.hour, matchdate.second, tzinfo=tzlocal())
         visibility_timeout = (matchdate - timedelta(seconds=3600) - datetime.now(tzlocal())).seconds
         if visibility_timeout > 0:
             encoded_content = BinaryBase64EncodePolicy().encode(content.encode('utf-8'))
