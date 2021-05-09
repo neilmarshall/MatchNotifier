@@ -7,10 +7,16 @@ from itertools import groupby
 import azure.functions as func
 from azure.data.tables import TableServiceClient
 from azure.storage.queue import BinaryBase64EncodePolicy, QueueClient, QueueServiceClient
-from dateutil.tz import tzlocal, tzutc
+from dateutil.tz import gettz, tzutc
 
 from email_client.email_client import send_email
 from fixture_parser.get_fixtures import get_fixtures
+
+
+def get_timeout(year, month, day, hour, minute, tz='BST'):
+    dt_local = datetime(year, month, day, hour, minute, tzinfo=gettz(tz))
+    dt_utc = datetime(year, month, day, hour, minute, tzinfo=tzutc())
+    return (dt_utc - timedelta(seconds=3600) - datetime.now(tzutc())).seconds + (dt_utc - dt_local).seconds
 
 
 def enqueue_notifcation(queue_client, recipient, competition, home_team, away_team, matchdate):
@@ -22,8 +28,7 @@ def enqueue_notifcation(queue_client, recipient, competition, home_team, away_te
             'awayTeam': away_team,
             'matchdate': matchdate.isoformat()
         })
-        matchdate = datetime(matchdate.year, matchdate.month, matchdate.day, matchdate.hour, matchdate.minute, matchdate.second, tzinfo=tzlocal())
-        visibility_timeout = (matchdate - timedelta(seconds=3600) - datetime.now(tzutc())).seconds
+        visibility_timeout = get_timeout(matchdate.year, matchdate.month, matchdate.day, matchdate.hour, matchdate.minute, matchdate.second)
         if visibility_timeout > 0:
             encoded_content = BinaryBase64EncodePolicy().encode(content.encode('utf-8'))
             queue_client.send_message(encoded_content, visibility_timeout=visibility_timeout)
