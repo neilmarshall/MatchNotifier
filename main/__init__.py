@@ -13,6 +13,8 @@ from email_client.email_client import send_email
 from fixture_parser.get_fixtures import get_fixtures
 
 
+logging.basicConfig()
+
 def get_timeout(year, month, day, hour, minute, tz='BST', offset=3600):
     dt_local = datetime(year, month, day, hour, minute, tzinfo=gettz(tz))
     return (dt_local - timedelta(seconds=offset) - datetime.now(gettz(tz))).seconds
@@ -28,11 +30,12 @@ def enqueue_notifcation(queue_client, recipient, competition, home_team, away_te
             'matchdate': matchdate.isoformat()
         })
         visibility_timeout = get_timeout(matchdate.year, matchdate.month, matchdate.day, matchdate.hour, matchdate.minute, matchdate.second)
+        logging.info(f"Enqueueing notification with time delay {visibility_timeout} seconds")
         if visibility_timeout > 0:
             encoded_content = BinaryBase64EncodePolicy().encode(content.encode('utf-8'))
             queue_client.send_message(encoded_content, visibility_timeout=visibility_timeout)
     except Exception as ex:
-        logging.exception(ex)
+        logging.error(ex, stack_info=True)
 
 
 def main(mytimer: func.TimerRequest) -> None:
@@ -69,4 +72,4 @@ def main(mytimer: func.TimerRequest) -> None:
             else:
                 logging.info("No fixtures found today")
     except Exception as ex:
-        logging.exception(ex)
+        logging.error(ex, stack_info=True)
