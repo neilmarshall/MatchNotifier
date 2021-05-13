@@ -7,16 +7,15 @@ from itertools import groupby
 import azure.functions as func
 from azure.data.tables import TableServiceClient
 from azure.storage.queue import BinaryBase64EncodePolicy, QueueClient, QueueServiceClient
-from dateutil.tz import gettz, tzutc
+from dateutil.tz import gettz
 
 from email_client.email_client import send_email
 from fixture_parser.get_fixtures import get_fixtures
 
 
-def get_timeout(year, month, day, hour, minute, tz='BST'):
+def get_timeout(year, month, day, hour, minute, tz='BST', offset=3600):
     dt_local = datetime(year, month, day, hour, minute, tzinfo=gettz(tz))
-    dt_utc = datetime(year, month, day, hour, minute, tzinfo=tzutc())
-    return (dt_utc - timedelta(seconds=3600) - datetime.now(tzutc())).seconds + (dt_utc - dt_local).seconds
+    return (dt_local - timedelta(seconds=offset) - datetime.now(gettz(tz))).seconds
 
 
 def enqueue_notifcation(queue_client, recipient, competition, home_team, away_team, matchdate):
@@ -33,7 +32,7 @@ def enqueue_notifcation(queue_client, recipient, competition, home_team, away_te
             encoded_content = BinaryBase64EncodePolicy().encode(content.encode('utf-8'))
             queue_client.send_message(encoded_content, visibility_timeout=visibility_timeout)
     except Exception as ex:
-        logging.error(ex)
+        logging.exception(ex)
 
 
 def main(mytimer: func.TimerRequest) -> None:
@@ -70,4 +69,4 @@ def main(mytimer: func.TimerRequest) -> None:
             else:
                 logging.info("No fixtures found today")
     except Exception as ex:
-        logging.error(ex)
+        logging.exception(ex)

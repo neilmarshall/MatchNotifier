@@ -1,6 +1,6 @@
 import unittest
 from datetime import datetime
-from dateutil.tz import gettz, tzutc
+from dateutil.tz import gettz
 from unittest.mock import call, MagicMock, patch
 
 from main import get_timeout, main
@@ -46,12 +46,9 @@ class MainTestCase(unittest.TestCase):
             call('Fixture Notification', 'The FA Cup - Chelsea vs. Arsenal, 12:00PM\nPremier League - Burnley vs. Liverpool, 4:30PM', 'test1@test.com'),
             call('Fixture Notification', 'Premier League - Burnley vs. Liverpool, 4:30PM', 'test2@test.com')
         ))
-    
+
     @patch('main.datetime')
     def test_get_timeout(self, mock_datetime):
-        mock_datetime.side_effect = [
-            datetime(2021, 9, 5, 17, 30, tzinfo=gettz('BST')),
-            datetime(2021, 9, 5, 17, 30, tzinfo=tzutc())
-        ]
-        mock_datetime.now = lambda _: datetime(2021, 9, 5, 8, 30, tzinfo=tzutc())
-        self.assertEqual(get_timeout(2021, 9, 5, 17, 30), 32400)
+        mock_datetime.return_value = datetime(2021, 9, 5, 17, 30, tzinfo=gettz('BST'))
+        mock_datetime.now = lambda _: datetime(2021, 9, 5, 8, 30, tzinfo=gettz('BST'))
+        self.assertEqual(get_timeout(2021, 9, 5, 17, 30), (17 - 1 - 8) * 60 * 60)
