@@ -35,7 +35,7 @@ def enqueue_notifcation(queue_client, recipient, competition, home_team, away_te
             encoded_content = BinaryBase64EncodePolicy().encode(content.encode('utf-8'))
             queue_client.send_message(encoded_content, visibility_timeout=visibility_timeout)
     except Exception as ex:
-        logging.error(ex, stack_info=True)
+        logging.error(ex, exc_info=True, stack_info=True)
 
 
 def main(mytimer: func.TimerRequest) -> None:
@@ -72,4 +72,4 @@ def main(mytimer: func.TimerRequest) -> None:
             else:
                 logging.info("No fixtures found today")
     except Exception as ex:
-        logging.error(ex, stack_info=True)
+        logging.error(ex, exc_info=True, stack_info=True)
