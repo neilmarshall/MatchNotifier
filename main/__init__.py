@@ -13,8 +13,6 @@ from email_client.email_client import send_email
 from fixture_parser.get_fixtures import get_fixtures
 
 
-logging.basicConfig()
-
 def get_timeout(year, month, day, hour, minute, tz='BST', offset=3600):
     dt_local = datetime(year, month, day, hour, minute, tzinfo=gettz(tz))
     return (dt_local - timedelta(seconds=offset) - datetime.now(gettz(tz))).seconds
