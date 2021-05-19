@@ -27,7 +27,7 @@ def enqueue_notifcation(queue_client, recipient, competition, home_team, away_te
             'awayTeam': away_team,
             'matchdate': matchdate.isoformat()
         })
-        visibility_timeout = get_timeout(matchdate.year, matchdate.month, matchdate.day, matchdate.hour, matchdate.minute, matchdate.second)
+        visibility_timeout = get_timeout(matchdate.year, matchdate.month, matchdate.day, matchdate.hour, matchdate.minute)
         logging.info(f"Enqueueing notification with time delay {visibility_timeout} seconds")
         if visibility_timeout > 0:
             encoded_content = BinaryBase64EncodePolicy().encode(content.encode('utf-8'))
