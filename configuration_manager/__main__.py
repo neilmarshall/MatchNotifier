@@ -1,8 +1,9 @@
 import argparse
-import json
 from uuid import uuid4
 
 from azure.data.tables import TableServiceClient
+
+from configuration_manager import Config
 
 
 parser = argparse.ArgumentParser(description='Command-line client for registering for match notifications')
@@ -13,10 +14,9 @@ parser.add_argument('team_name', help='Team name for filtering notfications')
 if __name__ == '__main__':
     try:
         args = parser.parse_args()
-        with open('local.settings.json') as f:
-            config = json.load(f)['Values']
-        table_client = TableServiceClient.from_connection_string(conn_str=config['AzureWebJobsStorage'])
-        table = table_client.create_table_if_not_exists(config['TableName'])
+        config = Config()
+        table_client = TableServiceClient.from_connection_string(conn_str=config.get_connection_string())
+        table = table_client.create_table_if_not_exists(config.parameters['TableName'])
         entity = {
             'PartitionKey': args.email_address,
             'RowKey': str(uuid4()),

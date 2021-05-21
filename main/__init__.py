@@ -1,6 +1,5 @@
 import json
 import logging
-import os
 from datetime import datetime, timedelta
 from itertools import groupby
 
@@ -9,6 +8,7 @@ from azure.data.tables import TableServiceClient
 from azure.storage.queue import BinaryBase64EncodePolicy, QueueClient, QueueServiceClient
 from dateutil.tz import gettz
 
+from configuration_manager import Config
 from email_client.email_client import send_email
 from fixture_parser.get_fixtures import get_fixtures
 
@@ -38,13 +38,15 @@ def enqueue_notifcation(queue_client, recipient, competition, home_team, away_te
 
 def main(mytimer: func.TimerRequest) -> None:
     try:
-        table_service_client = TableServiceClient.from_connection_string(conn_str=os.environ["AzureWebJobsStorage"])
-        table_client = table_service_client.get_table_client(os.environ["TableName"])
+        config = Config()
 
-        queue_service_client = QueueServiceClient.from_connection_string(os.environ["AzureWebJobsStorage"])
-        queue_client = queue_service_client.get_queue_client(os.environ["QueueName"])
+        table_service_client = TableServiceClient.from_connection_string(conn_str=config.get_connection_string())
+        table_client = table_service_client.get_table_client(config.parameters["TableName"])
 
-        fixtures_URL = os.environ.get("FixturesURL")
+        queue_service_client = QueueServiceClient.from_connection_string(conn_str=config.get_connection_string())
+        queue_client = queue_service_client.get_queue_client(config.parameters["QueueName"])
+
+        fixtures_URL = config.parameters["FixturesURL"]
 
         entities = sorted(table_client.list_entities(), key=lambda o: o['PartitionKey'])
         for email, _entities in groupby(entities, key=lambda o: o['PartitionKey']):
