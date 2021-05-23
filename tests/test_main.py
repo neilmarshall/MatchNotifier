@@ -7,7 +7,11 @@ from main import get_timeout, main
 
 
 class MainTestCase(unittest.TestCase):
-    mock_environ = MagicMock(get = MagicMock(return_value = 'mock_get_fixtures_url'))
+    mock_config = MagicMock(return_value = MagicMock(parameters = {
+        'FixturesURL': 'mock_get_fixtures_url',
+        'TableName': None,
+        'QueueName': None
+    }))
 
     mock_entities = [
         {'PartitionKey': 'test1@test.com', 'RowKey': '1', 'CompetitionName': 'Premier League', 'TeamName': 'Liverpool'},
@@ -28,7 +32,7 @@ class MainTestCase(unittest.TestCase):
         [('Premier League', 'Burnley', 'Liverpool', datetime(2021, 1, 24, 16, 30, 0))]
     ))
 
-    @patch('main.os.environ', mock_environ)
+    @patch('main.Config', mock_config)
     @patch('main.TableServiceClient', mock_table_service_client)
     @patch('main.QueueServiceClient')
     @patch('main.get_fixtures', mock_get_fixtures)
