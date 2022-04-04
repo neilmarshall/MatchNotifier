@@ -41,8 +41,7 @@ def main():
                     timestamp = f"{matchdate.hour % 12 if matchdate.hour > 12 else matchdate.hour}:{matchdate.minute:02}{'AM' if matchdate.hour < 12 else 'PM'}"
                     body.append(f"{competition} - {home_team} vs. {away_team}, {timestamp}")
                 subject = "Fixture Notification"
-                # TODO - uncomment this line once ready
-                # send_email(subject, '\n'.join(body), email)
+                send_email(subject, '\n'.join(body), email)
             else:
                 logger.info(f"No fixtures found today - {fixture_filter}")
     except Exception as ex:
