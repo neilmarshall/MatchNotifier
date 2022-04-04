@@ -1,17 +1,22 @@
 import json
 import logging
+import os
+
+from dotenv import load_dotenv
 
 from email_client.email_client import send_email
 from fixture_parser.get_fixtures import get_fixtures
 
-# TODO - ensure this works when called from another location rather than the root directory
-# TODO - make sure that 'logs' directory exists
-logging.basicConfig(filename='./logs/match-notifier-logs.txt', level=logging.INFO, format='%(levelname)s:%(name)s:%(asctime)s:%(message)s')
+load_dotenv()
+
+log_folder_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), os.environ["LOG_FOLDER_PATH"])
+if not os.path.exists(log_folder_path):
+    os.mkdir(log_folder_path)
+logging.basicConfig(filename=os.path.join(log_folder_path, os.environ["LOG_FILENAME"]), level=logging.INFO, format='%(levelname)s:%(name)s:%(asctime)s:%(message)s')
 logger = logging.getLogger(__name__)
 
 def get_config():
-    # TODO - update this to read the directory of __file__ then open the config from an absolute path, so the program can be run from anywhere
-    with open('./config.json') as f:
+    with open(os.path.join(os.path.dirname(os.path.abspath(__file__)), 'config.json')) as f:
         return json.load(f)
 
 

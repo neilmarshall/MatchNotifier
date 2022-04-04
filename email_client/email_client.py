@@ -9,9 +9,9 @@ def send_email(subject, body, recipient):
     msg["subject"] = subject
     msg["to"] = recipient
 
-    email_account_address = os.environ["EmailAccountAddress"]
+    email_account_address = os.environ["EMAIL_ACCOUNT_ADDRESS"]
     msg["from"] = email_account_address
-    email_account_password = os.environ["EmailAccountPassword"]
+    email_account_password = os.environ["EMAIL_ACCOUNT_PASSWORD"]
 
     server = smtplib.SMTP("smtp.gmail.com", 587)
     server.starttls()
