@@ -30,9 +30,9 @@ class MainTestCase(unittest.TestCase):
     })
 
     mock_get_fixtures = MagicMock(side_effect=(
+        [('Premier League', 'Burnley', 'Liverpool', datetime(2021, 1, 24, 16, 30, 0))],
         [('The FA Cup', 'Chelsea', 'Arsenal', datetime(2021, 1, 24, 12, 0, 0)),
-         ('Premier League', 'Burnley', 'Liverpool', datetime(2021, 1, 24, 16, 30, 0))],
-        [('Premier League', 'Burnley', 'Liverpool', datetime(2021, 1, 24, 16, 30, 0))]
+         ('Premier League', 'Burnley', 'Liverpool', datetime(2021, 1, 24, 16, 30, 0))]
     ))
 
     @patch('run.get_config', mock_get_config)
@@ -48,6 +48,6 @@ class MainTestCase(unittest.TestCase):
         ))
         self.assertEqual(mock_send_email.call_count, call_count)
         mock_send_email.assert_has_calls((
-            call('Fixture Notification', 'The FA Cup - Chelsea vs. Arsenal, 12:00PM\nPremier League - Burnley vs. Liverpool, 4:30PM', 'test1@test.com'),
-            call('Fixture Notification', 'Premier League - Burnley vs. Liverpool, 4:30PM', 'test2@test.com')
+            call('Fixture Notification', 'Premier League - Burnley vs. Liverpool, 4:30PM', 'test1@test.com'),
+            call('Fixture Notification', 'The FA Cup - Chelsea vs. Arsenal, 12:00PM\nPremier League - Burnley vs. Liverpool, 4:30PM', 'test2@test.com')
         ))
