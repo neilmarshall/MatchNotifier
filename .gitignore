@@ -44,3 +44,9 @@ venv.bak/
 __pycache__/
 *.py[cod]
 *$py.class
+
+# Log files
+logs/
+
+# Application configuration - user data
+config.json

@@ -1,4 +1,5 @@
 import requests
+
 from .filter_fixtures import filter_fixtures
 from .parse_fixtures import parse_fixtures
 
